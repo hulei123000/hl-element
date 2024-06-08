@@ -1,7 +1,8 @@
-import { makeInstaller } from "@toy-element/utils";
+import { makeInstaller } from "@hl-element/utils";
 import components from "./components";
-
+import '@hl-element/theme/index.css'
 const installer = makeInstaller(components);
 
-export * from "@toy-element/components";
+export * from "@hl-element/components";
+console.log(installer)
 export default installer;

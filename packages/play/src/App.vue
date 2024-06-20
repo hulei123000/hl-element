@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <hl-button>你好</hl-button>
+  <hl-button type="primary" size="small">你好</hl-button>
 </template>
 
 <style scoped>

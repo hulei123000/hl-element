@@ -1,0 +1,15 @@
+.hl-icon {
+  --hl-icon-color: inherit;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  fill: currentColor;
+  color: var(--hl-icon-color);
+  font-size: inherit;
+}
+@each $val in primary, success, warning, info, danger {
+  .hl-icon--$(val) {
+    --hl-icon-color: var(--hl-color-$(val))
+  }
+}

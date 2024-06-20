@@ -4,7 +4,7 @@
   /* colors */
   --hl-color-white: #ffffff;
   --hl-color-black: #000000;
-  /*--colors: (primary: #409eff, success: #67c23a, warning: #e6a23c, danger: #f56c6c, info: #909399);*/
+  --colors: (primary: #409eff, success: #67c23a, warning: #e6a23c, danger: #f56c6c, info: #909399);
   --hl-bg-color: #ffffff;
   --hl-bg-color-page: #f2f3f5;
   --hl-bg-color-overlay: #ffffff;
@@ -27,13 +27,13 @@
   --hl-fill-color-darker: #e6e8eb;
   --hl-fill-color-blank: #ffffff;
 
-  /*@each $val, $color in var(--colors) {*/
-  /*  --hl-color-$(val): $(color);*/
-  /*  @for $i from 3 to 9 {*/
-  /*    --hl-color-$(val)-light-$(i): mix(#fff, $(color), 0.$(i));*/
-  /*  }*/
-  /*  --hl-color-$(val)-dark-2: mix(#000, $(color), 0.2);*/
-  /*}*/
+  @each $val, $color in var(--colors) {
+    --hl-color-$(val): $(color);
+    @for $i from 3 to 9 {
+      --hl-color-$(val)-light-$(i): mix(#fff, $(color), 0.$(i));
+    }
+    --hl-color-$(val)-dark-2: mix(#000, $(color), 0.2);
+  }
 
   /* border */
   --hl-border-width: 1px;

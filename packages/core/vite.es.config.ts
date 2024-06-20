@@ -5,15 +5,13 @@ import { resolve } from 'path';
 import dts from 'vite-plugin-dts';
 import { readdirSync } from 'fs';
 import { defer, delay, filter, map, includes } from "lodash-es";
-// function getDirectoriesSync(basePath: string) {
-//   console.log(basePath)
-//   const entries = readdirSync(basePath, { withFileTypes: true });
-//   console.log(entries)
-//   return map(
-//     filter(entries, (entry) => entry.isDirectory()),
-//     (entry) => entry.name
-//   );
-// }
+function getDirectoriesSync(basePath: string) {
+  const entries = readdirSync(basePath, { withFileTypes: true });
+  return map(
+    filter(entries, (entry) => entry.isDirectory()),
+    (entry) => entry.name
+  );
+}
 const COMP_NAMES = [
   'Button',
   'Icon',
@@ -73,12 +71,12 @@ export default defineConfig({
           if(id.includes('/packages/utils')){
             return 'utils'
           }
-          // for (const item of getDirectoriesSync("./components.ts")) {
-          //   if (includes(id, `/packages/components/${item}`)) return item;
-          // }
-          for (const item of COMP_NAMES) {
+          for (const item of getDirectoriesSync("../components")) {
             if (includes(id, `/packages/components/${item}`)) return item;
           }
+          // for (const item of COMP_NAMES) {
+          //   if (includes(id, `/packages/components/${item}`)) return item;
+          // }
         }
 			}
 		}

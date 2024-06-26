@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm --filter @hl-element/play dev",
-    "story": "pnpm --filter @hl-element/play storybook",
+    "dev": "pnpm run build && pnpm --filter @hl-element/play dev",
+    "story": "pnpm run build && pnpm --filter @hl-element/play storybook",
     "docs:dev": "pnpm --filter @hl-element/docs dev",
     "docs:build": "pnpm --filter @hl-element/docs build",
     "docs:preview": "pnpm --filter @hl-element/docs preview",

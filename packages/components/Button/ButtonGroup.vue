@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ButtonGroupProps } from './type'
-import { ref, provide, toRef, reactive } from 'vue'
+import { provide, toRef, reactive } from 'vue'
 import { BUTTON_GROUP_CTX_KEY } from './constants.ts'
 defineOptions({
   name: 'HlButtonGroup'

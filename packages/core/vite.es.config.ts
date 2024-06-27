@@ -3,27 +3,41 @@ import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
 // 生成类型文件
 import dts from 'vite-plugin-dts';
-import { readdirSync } from 'fs';
-import { defer, delay, filter, map, includes } from "lodash-es";
+import { readdirSync } from 'node:fs';
+import { defer, delay, filter, map, includes } from 'lodash-es';
+import shell from 'shelljs';
+import hooks from './hooksPlugin';
 function getDirectoriesSync(basePath: string) {
-  const entries = readdirSync(basePath, { withFileTypes: true });
-  return map(
-    filter(entries, (entry) => entry.isDirectory()),
-    (entry) => entry.name
-  );
+	const entries = readdirSync(basePath, { withFileTypes: true });
+	return map(
+		filter(entries, entry => entry.isDirectory()),
+		entry => entry.name
+	);
 }
-const COMP_NAMES = [
-  'Button',
-  'Icon',
-]
+
+
+const TRY_MOVE_STYLES_DELAY = 1800 as const;
+function moveStyles() {
+	try {
+		readdirSync('./dist/es/theme');
+		shell.mv('./dist/es/theme', './dist');
+	} catch (_) {
+		delay(moveStyles, TRY_MOVE_STYLES_DELAY);
+	}
+}
+const COMP_NAMES = ['Button', 'Icon'];
 export default defineConfig({
 	plugins: [
 		vue(),
 		dts({
-      // 读取tsconfig.build.json
+			// 读取tsconfig.build.json
 			tsconfigPath: '../../tsconfig.build.json',
 			// 输出类型声明文件
 			outDir: 'dist/types'
+		}),
+		hooks({
+			rmFiles: ['./dist/es', './dist/theme', './dist/types'],
+			afterBuild: moveStyles
 		})
 	],
 	build: {
@@ -34,6 +48,7 @@ export default defineConfig({
 			fileName: 'index',
 			formats: ['es']
 		},
+		cssCodeSplit: true,
 		rollupOptions: {
 			//
 			external: [
@@ -58,26 +73,33 @@ export default defineConfig({
 				},
 				assetFileNames: assetInfo => {
 					if (assetInfo.name === 'style.css') return 'index.css';
+					// 将css文件提取到theme文件夹下
+					if (
+						assetInfo.type === 'asset' &&
+						/\.(css)$/i.test(assetInfo.name as string)
+					) {
+						return 'theme/[name].[ext]';
+					}
 					return assetInfo.name as string;
 				},
-        // 分包
-        manualChunks(id){
-          if(id.includes('node_modules')){
-            return 'vendor'
-          }
-          if(id.includes('/packages/hooks')){
-            return 'hooks'
-          }
-          if(id.includes('/packages/utils')){
-            return 'utils'
-          }
-          for (const item of getDirectoriesSync("../components")) {
-            if (includes(id, `/packages/components/${item}`)) return item;
-          }
-          // for (const item of COMP_NAMES) {
-          //   if (includes(id, `/packages/components/${item}`)) return item;
-          // }
-        }
+				// 分包
+				manualChunks(id) {
+					if (id.includes('node_modules')) {
+						return 'vendor';
+					}
+					if (id.includes('/packages/hooks')) {
+						return 'hooks';
+					}
+					if (id.includes('/packages/utils')) {
+						return 'utils';
+					}
+					for (const item of getDirectoriesSync('../components')) {
+						if (includes(id, `/packages/components/${item}`)) return item;
+					}
+					// for (const item of COMP_NAMES) {
+					//   if (includes(id, `/packages/components/${item}`)) return item;
+					// }
+				}
 			}
 		}
 	}
